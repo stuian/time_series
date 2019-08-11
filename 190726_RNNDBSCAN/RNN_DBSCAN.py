@@ -53,7 +53,7 @@ def ExpandClusters(X,assign):
         if assign[x] == -1 :
             neighbors = KNN(X,x)
             mincluster = -1
-            mindist = np.float('inf')
+            mindist = float('inf')
             for n in neighbors:
                 cluster = assign[n]
                 d = dist(X[x],X[n])
@@ -74,7 +74,7 @@ def KNN(X,x):
     curr_colum = []
     for i in range(size):
         if i == x:
-            curr_colum.append(np.float('inf'))
+            curr_colum.append(float('inf'))
         else:
             curr_colum.append(dist(X[x],X[i]))
     temp = map(curr_colum.index, heapq.nsmallest(k, curr_colum))
