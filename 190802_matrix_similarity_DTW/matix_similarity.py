@@ -27,15 +27,15 @@ def DTW(s1,s2):
     return np.sqrt(DTW[(len(s1)-1,len(s2)-1)])
 
 # 判断矩阵的相似性
-def matrix_DTW_vertical(X,Y):
+def matrix_DTWi(X,Y):
     distance = 0
     n = X.shape[1]
     for i in range(n):
         temp = DTW(X[:,i],Y[:,i])
-        distance = distance + temp # 简单求和?
+        distance = distance + temp
     return distance
 
-def matrix_DTW_horizon(X,Y):
+def matrix_DTWd(X,Y):
     m = X.shape[0]
     n = Y.shape[0]
     matrix_DTW = {}

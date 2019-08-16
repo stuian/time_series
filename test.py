@@ -1,10 +1,5 @@
-class test(object):
-    def __init__(self):
-        self.counter = 0
-        for i in range(5):
-            self.counter += 1
-    def function(self):
-        print(self.counter)
+import numpy as np
 
-t = test()
-t.function()
+a = np.array([3,4,1,7,2])
+
+print(sorted(enumerate(a),key=lambda x: x[1])[:2])
