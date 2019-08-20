@@ -1,5 +1,6 @@
-import numpy as np
+def foo():
+    a = 1+2
+    return a
 
-a = np.array([3,4,1,7,2])
-
-print(sorted(enumerate(a),key=lambda x: x[1])[:2])
+b = 3 + foo()
+print(b)

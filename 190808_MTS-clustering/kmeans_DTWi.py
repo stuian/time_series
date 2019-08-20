@@ -4,19 +4,13 @@ from evaluation import Purity
 from evaluation import RandIndex
 from evaluation import NMI
 import h5py
+import os
 
-
-def init_random_medoids(X,y,k):
+def init_random_medoids(X,k):
     centroids = np.zeros((k, X.shape[1], X.shape[2]))
     for i in range(k):
-        count = 0
-        for j in range(len(y)):
-            if y[j] == i + 1:
-                centroids[i]  = centroids[i] + X[j]
-                count += 1
-        centroids[i] = centroids[i] / count
-        # centroid = X[np.random.choice(range(n_samples))]
-        # centroids[i] = centroid
+        centroid = X[np.random.choice(range(X.shape[0]))]
+        centroids[i] = centroid
     return centroids
 
 def DTW(s1,s2):
@@ -40,31 +34,28 @@ def DTWi(X,Y):
         distance = distance + temp
     return distance
 
-def update_centroids(k,X,y_pred,centroids):
+def update_centroids(X,clusters,centroids):
     # update Center point
-    for k1 in range(k):
-        clust_ind = []
-        for ind, j in enumerate(y_pred):
-            if j == k1+1:
-                clust_ind.append(ind)
+    for i in range(len(clusters)):
         temp = np.zeros(centroids[0].shape)
-        for k2 in clust_ind:
-            temp = temp + X[k2]
-            temp = temp / len(clust_ind)  # 0/0
-        centroids[k1] = temp  # 更新
+        for j in clusters[i]:
+            temp = temp + X[j]
+        temp = temp / len(clusters[i])
+        centroids[i] = temp
     return centroids
 
-def kmeans_DTWi(X,y):
+def kmeans_DTWi(X,y,centroids):
     k = len(np.unique(y))
     m = X.shape[0]
 
     y_pred = np.zeros(m)
-    centroids = init_random_medoids(X,y,k)
+    assignment = [[] for _ in range(k)]
+    # centroids = init_random_medoids(X,k)
 
-    clusterChanged = 0
+    clusterChanged = True
     start = time.time()
-    while clusterChanged < 50:
-        # clusterChanged = False
+    while clusterChanged:
+        clusterChanged = False
         for i in range(m):
             minDist = np.inf
             minIndex = -1
@@ -72,12 +63,13 @@ def kmeans_DTWi(X,y):
                 distJI = DTWi(centroids[j],X[i])
                 if distJI < minDist:
                     minDist = distJI
-                    minIndex = j+1
+                    minIndex = j
             if y_pred[i] != minIndex:
-                # clusterChanged = True  # 一直到收敛，不在更新，则迭代完成
-                y_pred[i] = minIndex
-        clusterChanged += 1
-        centroids = update_centroids(k,X,y_pred,centroids)
+                clusterChanged = True  # 一直到收敛，不在更新，则迭代完成
+            y_pred[i] = minIndex
+            assignment[minIndex].append(i)
+        # clusterChanged += 1
+        centroids = update_centroids(X,assignment,centroids)
     end = time.time()
     return float(end-start),y_pred,RandIndex(y_pred,y),Purity(y_pred,y),NMI(y_pred,y)
 
@@ -93,8 +85,10 @@ def main():
         y = f['train_y'][:] # 1,2,3... np.array
         cost_time,y_pred,randindex,purity,nmi= kmeans_DTWi(X,y)
         newfilename = str(count) + '.npy'
+        path = './result'
+        newpath = os.path.join(path,newfilename)
         count += 1
-        np.save(newfilename,y_pred)
+        np.save(newpath,y_pred)
         print(file,"数据集聚类的时间为%.2f秒,RI值为%.2f,purity值为%.2f,nmi值为%.2f" % (cost_time,randindex,purity,nmi))
 
     # 2、

@@ -57,6 +57,7 @@ def distance_to_HDP(D,density):
         distance[sortIndex[j][0]] = NNDist(sortIndex[j][0],high_list,D)
     # the highest density point
     distance[sortIndex[0][0]] = max(distance)
+    return distance
 
 # 3、
 def cluster_center(D,d,k):
@@ -68,6 +69,24 @@ def cluster_center(D,d,k):
     center_points = sort_points[:k] # k cluster
     center_points = [ center_points[i][0] for i in range(k)] # return point indexs
     return center_points
+
+# 4、
+def cluster_assignment(X,n,distance,):
+    C = np.zeros(n)
+    for i in range(len(X)):
+        C[X[i]] = i+1 # 1,2,3,..,k
+    for i in range(n):
+        if C[sortIndex[i]] == 0: # no cluster yet
+            C[sortIndex[i]] = C(NN(sortIndex[i])) # 这部分代码并不完整
+
+
+def main():
+    X = cluster_center(D, d, k)
+
+if __name__ == '__main__':
+    main()
+
+
 
 
 

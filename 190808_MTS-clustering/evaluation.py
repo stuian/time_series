@@ -84,7 +84,7 @@ def NMI(A,B):
 if __name__ == '__main__':
     # 注意：输入里的A，B必须是numpy.array，用python的list测试NMI会报错
     y_pred = np.array([1, 1, 1, 1, 2, 4, 4, 3])
-    labels = np.array([1, 2, 2, 1, 2, 4, 4, 3])
+    labels = np.array([2, 2,2, 2, 1, 4, 4, 3])
     print(Purity(y_pred,labels))
     print(RandIndex(y_pred,labels))
     print(NMI(y_pred,labels))
