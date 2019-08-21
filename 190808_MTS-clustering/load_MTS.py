@@ -6,14 +6,14 @@ import os
 
 # 1、
 def cricket_data():
-    xleft = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/xleft.txt',delimiter=' ')
+    xleft = np.genfromtxt('../data/Cricket/xleft.txt',delimiter=' ')
     label = xleft[:,0]
     xleft = xleft[:,1:]
-    yleft = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/yleft.txt',delimiter=' ')[:,1:]
-    zleft = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/zleft.txt',delimiter=' ')[:,1:]
-    xright = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/xright.txt',delimiter=' ')[:,1:]
-    yright = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/yright.txt',delimiter=' ')[:,1:]
-    zright = np.genfromtxt('../190806_DTW_multi_time_series/dataSets/Cricket/zright.txt',delimiter=' ')[:,1:]
+    yleft = np.genfromtxt('../data/Cricket/yleft.txt',delimiter=' ')[:,1:]
+    zleft = np.genfromtxt('../data/Cricket/zleft.txt',delimiter=' ')[:,1:]
+    xright = np.genfromtxt('../data/Cricket/xright.txt',delimiter=' ')[:,1:]
+    yright = np.genfromtxt('../data/Cricket/yright.txt',delimiter=' ')[:,1:]
+    zright = np.genfromtxt('../data/Cricket/zright.txt',delimiter=' ')[:,1:]
     # print(xleft.shape)
     # print(yleft.shape)
     # print(zleft.shape)
@@ -82,11 +82,12 @@ def full_data():
 
 if __name__ == '__main__':
     # 1、read cricket_data
-    # file = h5py.File('cricket_data.h5','r')
-    # train_x = file['train_x'][:]
-    # train_y = file['train_y'][:]
+    file = h5py.File('cricket_data.h5','r')
+    train_x = file['train_x'][:]
+    train_y = file['train_y'][:]
+    print(len(np.unique(train_y)))
     # 2、Multi 数据
-    full_data()
+    # full_data()
     # read
 
 
