@@ -1,6 +1,7 @@
 from kmeans_DTWi import kmeans_DTWi
 from kmeans_DTWd import kmeans_DTWd
 from kmeans_aDTWi import kmeans_aDTWi
+from kmeans_dot import kmeans_dot
 import h5py
 import numpy as np
 
@@ -30,7 +31,9 @@ def main():
         cost_time, y_pred, randindex, purity, nmi = kmeans_aDTWi(X, y, centroids)
         print("kmeans_aDTWi在", file,
               "数据集上聚类的时间为%.2f秒,RI值为%.2f,purity值为%.2f,nmi值为%.2f" % (cost_time, randindex, purity, nmi))
-
+        cost_time, y_pred, randindex, purity, nmi = kmeans_dot(X, y, centroids)
+        print("kmeans_dot在", file,
+              "数据集上聚类的时间为%.2f秒,RI值为%.2f,purity值为%.2f,nmi值为%.2f" % (cost_time, randindex, purity, nmi))
     # 2、
 
 if __name__ == '__main__':

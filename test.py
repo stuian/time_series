@@ -1,2 +1,5 @@
-feature_types = (['numerical']*3) + ['categorical'] + (['numerical']*9)
-print(len(feature_types))
+import numpy as np
+
+a = [1,2,3,4]
+b = [1,1,0,0]
+print(np.dot(a,b))

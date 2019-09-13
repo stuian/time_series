@@ -6,7 +6,7 @@ def Z_normalization(x,mu,sigma):
     x = (x - mu) / sigma
     return x
 
-def main():
+def plot_12pics():
     file = h5py.File('cricket_data.h5', 'r')
     X = file['train_x'][:]
     y = file['train_y'][:]
@@ -37,4 +37,4 @@ def main():
     plt.show()
 
 if __name__ == '__main__':
-    main()
+    plot_12pics()
