@@ -67,7 +67,7 @@ def cluster_center(D,d,k):
         distance[i] = distance[i]*density[i]
     sort_points = sorted(enumerate(distance),key=lambda x: x[1],reverse=True)
     center_points = sort_points[:k] # k cluster
-    center_points = [ center_points[i][0] for i in range(k)] # return point indexs
+    center_points = [center_points[i][0] for i in range(k)] # return point indexs
     return center_points
 
 # 4、
