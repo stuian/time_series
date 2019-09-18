@@ -8,8 +8,8 @@ def inner_product(a,b):
 
 def multi_similarity(x,y):
     value = 0
-    for i in range(x.shape[0]):
-        value = value + inner_product(x[i,:],y[i,:])
+    for i in range(x.shape[1]):
+        value = value + inner_product(x[:,i],y[:,i])
     return value
 
 def distance_matrix(X):
@@ -17,7 +17,7 @@ def distance_matrix(X):
     dist_matrix = np.zeros((n,n))
     for i in range(1,n):
         for j in range(i):
-            dist_matrix[i][j] = multi_simlarity(X[i],X[j])
+            dist_matrix[i][j] = multi_similarity(X[i],X[j])
             dist_matrix[j][i] = dist_matrix[i][j]
     return dist_matrix
 

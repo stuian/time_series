@@ -93,12 +93,12 @@ def densityPeakRNN(k,X,D):
 
 
 if __name__ == '__main__':
-    k = 6 # knn与峰值k同变量
     file = h5py.File('E:\\Jade\\time_series\\190808_MTS-clustering\\cricket_data.h5', 'r')
     X = file['train_x'][:]
     y = file['train_y'][:]
     D = np.load("data/distance.npy")
     # print(len(np.unique(y))) # 12
+    k = 12  # knn与峰值k同变量
     center_points = densityPeakRNN(k,X,D)
     print(center_points)
     np.save("data/center_points.npy",center_points)
