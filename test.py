@@ -1,4 +1,4 @@
 import numpy as np
 
-x = np.random.uniform(-10,10,(100, 2))
-print(np.sum(np.square(x), axis=1))
+x = [1,2,3,4]
+print(np.hstack([x,x]))
