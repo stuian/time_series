@@ -1,4 +1,6 @@
 import numpy as np
 
-x = [1,2,3,4]
-print(np.hstack([x,x]))
+x = [1,2]
+y = [3,4]
+
+print(x+y)

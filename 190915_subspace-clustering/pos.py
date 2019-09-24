@@ -1,6 +1,7 @@
 # 粒子群算法
-# 例：两个参数的loss函数;参数的个数决定了解空间的维度
-# 适应度即函数值
+# 例：两个参数的loss函数;参数的个数决定解空间的维度
+# 适应度即函数值(loss等)
+# https://blog.csdn.net/winycg/article/details/79120154
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,6 +24,7 @@ class PSO(object):
         self.global_best_fitness = np.min(fitness)  # 全局最佳适应度
 
     def calculate_fitness(self, x):
+        # x:100 x 2
         return np.sum(np.square(x), axis=1) # 横向相加
 
     def evolve(self):
