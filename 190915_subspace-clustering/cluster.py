@@ -13,17 +13,24 @@ def multi_similarity(x,y,weight):
         value = value + weight[i] * inner_product(x[:,i],y[:,i])
     return value
 
-def series_to_centers(X,x,c,weight):
+# def series_to_centers(X,center_label,K,N,R):
+#     s_to_c = np.zeros((K,N,R))
+
+def series_to_centers(X,x,center_label,weight):
     # x:series index
-    # c:center indexs
+    # center_label:center indexes
     # return center index with min distance between series and centers
     minDist = float('inf')
-    for i in c:
-        temp = multi_similarity(X[i],X[x],weight)
-        if temp < minDist:
-            minDist = temp
-            cluster = i
-    return cluster
+    for i in range(center_label):
+        if center_label[i] == x:
+            return i
+        # x 不能与 峰值一样
+        else:
+            temp = multi_similarity(X[center_label[i]],X[x],weight[i])
+            if temp < minDist:
+                minDist = temp
+                cluster = i
+            return cluster
 
 def main():
     file = h5py.File('E:\\Jade\\time_series\\190808_MTS-clustering\\cricket_data.h5', 'r')

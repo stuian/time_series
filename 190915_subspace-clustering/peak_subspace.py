@@ -1,7 +1,10 @@
 import h5py
 import numpy as np
 import os
+from distance_matrix import distance_matrix
 from density_peak import densityPeakRNN
+from cluster import series_to_centers
+from update_subspace import getHA
 
 # 1、get Robot Execution Failures lp1-5 data
 path = 'E:\\Jade\\time_series\\190808_MTS-clustering'
@@ -18,7 +21,8 @@ for file in data_name:
     if os.path.exists(PATH):
         D = np.load(PATH)
     else:
-
+        D = distance_matrix(X)
+        np.save(PATH, D)
 
     # 2、初始化峰值和随机子空间
     K = len(np.unique(y))
@@ -26,3 +30,27 @@ for file in data_name:
     L = X.shape[1]
     R = X.shape[2]
 
+    # 2.1 初始化峰值
+    center_label = densityPeakRNN(K,X,D)
+    # 2.2 随机子空间
+    np.random.seed(0)
+    W = np.random.random((K,R))
+    s = W.sum(axis=1)
+    # 标准化，每一行相加等于1
+    for i in range(K):
+        W[i] = W[i] / s[i]
+
+    # 3、样本分配到簇
+    # 该步骤要用到变量子空间
+    part = np.zeros(N)
+    in_cluster = [[] for i in range(K)]
+    for n in range(N):
+        ck = series_to_centers(X,n,center_label,W)
+        part[n] = ck
+        in_cluster[ck].append(n)
+
+    # 4、更新子空间和峰值
+    # 4.1 更新子空间
+    W = getHA(part,in_cluster,N,K,R,center_label,X)
+    # 4.2 更新峰值
+    

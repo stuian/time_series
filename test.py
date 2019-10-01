@@ -1,6 +1,11 @@
 import numpy as np
 
-file = 'distance'
-PATH = './190915_subspace-clustering/data/' + file + '.npy'
-data = np.load(PATH)
-print(data.shape)
+np.random.seed(0)
+x = np.random.random((3,3))
+print(x)
+s = x.sum(axis=1)
+for i in range(3):
+    x[i] = x[i] / s[i]
+print(x)
+
+print(x.sum(axis=1))
