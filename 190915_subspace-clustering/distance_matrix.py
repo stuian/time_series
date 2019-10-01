@@ -9,7 +9,7 @@ def inner_product(a,b):
 def multi_similarity(x,y):
     value = 0
     for i in range(x.shape[1]):
-        value = value + inner_product(x[:,i],y[:,i])
+        value = value + inner_product(x[:,i],y[:,i]) # 没有加权重子空间
     return value
 
 def distance_matrix(X):

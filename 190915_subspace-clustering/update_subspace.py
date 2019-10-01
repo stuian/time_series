@@ -45,9 +45,9 @@ def getHA(part, in_cluster, distance, centerLabel, W, X):
             length_ck = len(in_cluster[k])
             length_nk = len(out_cluster[k])
             for r in range(R):
-                interdistance = np.zeros(length_ck * (length_ck - 1) / 2)
+                interdistance = np.zeros(length_ck * (length_ck - 1) // 2)
                 interdistance_a = np.zeros((length_ck, length_ck))
-                outsidedistance = np.zeros(length_nk * (length_nk - 1) / 2)
+                outsidedistance = np.zeros(length_nk * (length_nk - 1) // 2)
                 outsidedistance_a = np.zeros((length_nk, length_nk))
 
                 counter_i = 1
