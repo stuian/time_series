@@ -76,7 +76,6 @@ def densityPeakRNN(k,X,D):
     for i in range(n):
         # sample = X[i]
         density[i] = RNN(n,i,k,D)
-    np.save("data/density.npy", density)
     distance = distance_to_HDP(D,density)
     mean_density = np.mean(density)
     for i in range(len(density)):
@@ -90,7 +89,7 @@ def densityPeakRNN(k,X,D):
             center_points.append(sort_points[i][0])
             count += 1
         i += 1
-    return center_points
+    return center_points,density
 
 
 if __name__ == '__main__':
