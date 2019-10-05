@@ -37,13 +37,13 @@ def getHA(part,in_cluster,N,K,R,center_label,X):
             outsidedistance = np.zeros(length_nk * (length_nk - 1) // 2)
             outsidedistance_a = np.zeros((length_nk, length_nk))
 
-            counter_i = 1
+            counter_i = 0
             for i in range(length_ck):
                 for j in range(i + 1, length_ck):
                     interdistance[counter_i] = single_distance_between(X[in_cluster[k][i]], X[in_cluster[k][j]],r)
                     counter_i += 1
 
-            counter_i = 1
+            counter_i = 0
             for i in range(length_nk):
                 for j in range(i + 1, length_nk):
                     outsidedistance[counter_i] = single_distance_between(X[out_cluster[k][i]], X[out_cluster[k][j]],r)
@@ -59,7 +59,7 @@ def getHA(part,in_cluster,N,K,R,center_label,X):
             pkr = 0
             for i in in_cluster[k]:
                 pkr = pkr + single_distance_between(X[i],X[center_label[k]],r)
-            pkr = np.sqrt(pkr) / length_ck
+            pkr = np.sqrt(pkr) / length_ck # 说明length_ck里出现了0
 
             # HA_up[k,r] = HD * (length_ck/N)
             # HA_down[k,r] = pkr * (length_ck/N)

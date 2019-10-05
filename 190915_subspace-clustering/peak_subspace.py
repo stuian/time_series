@@ -9,13 +9,16 @@ from update_peak import update_peak
 
 # 1、get Robot Execution Failures lp1-5 data
 path = 'E:\\Jade\\time_series\\190808_MTS-clustering'
-data_name = ['Robot Execution Failures lp1', 'Robot Execution Failures lp2', 'Robot Execution Failures lp3','Robot Execution Failures lp4','Robot Execution Failures lp5']
+# data_name = ['Robot Execution Failures lp1', 'Robot Execution Failures lp2', 'Robot Execution Failures lp3','Robot Execution Failures lp4','Robot Execution Failures lp5']
+data_name = ['Robot Execution Failures lp5']
 for file in data_name:
     filename = file + '.h5'
     filename = os.path.join(path,filename)
     f = h5py.File(filename,'r')
     X = f['train_x'][:]
     y = f['train_y'][:] # 1,2,3... np.array
+
+    print("%s数据集进行子空间聚类..." % file)
     
     # 获取正常（没有变量权值）的距离矩阵
     PATH = './data/' + file + '_distance.npy'
@@ -59,5 +62,5 @@ for file in data_name:
         W = getHA(part,in_cluster,N,K,R,center_label,X)
         # 4.2 更新峰值
         center_label = update_peak(center_label,in_cluster,density,D)
-    return part
+    print(part)
     

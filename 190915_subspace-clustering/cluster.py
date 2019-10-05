@@ -21,16 +21,17 @@ def series_to_centers(X,x,center_label,weight):
     # center_label:center indexes
     # return center index with min distance between series and centers
     minDist = float('inf')
-    for i in range(center_label):
+    index = -1
+    for i in range(len(center_label)):
         if center_label[i] == x:
             return i
-        # x 不能与 峰值一样
+        # x 不能与峰值一样
         else:
             temp = multi_similarity(X[center_label[i]],X[x],weight[i])
             if temp < minDist:
                 minDist = temp
-                cluster = i
-            return cluster
+                index = i
+    return index
 
 def main():
     file = h5py.File('E:\\Jade\\time_series\\190808_MTS-clustering\\cricket_data.h5', 'r')
