@@ -1,4 +1,7 @@
-ck = {}
-ck[50] = 1
-ck[23] = 4
-print(ck)
+import matplotlib.pyplot as plt
+
+x = [1,2,3,4,5,6]
+
+plt.figure()
+plt.plot(x)
+plt.show()

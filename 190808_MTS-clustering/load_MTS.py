@@ -63,8 +63,7 @@ def get_filelist(dir):
     print(data.shape,len(labels),labels[0])
     return data,np.array(labels),np.array(labelname)
 
-def full_data():
-    data_name = ['Robot Execution Failures lp1','Robot Execution Failures lp2','Robot Execution Failures lp3','Robot Execution Failures lp4','Robot Execution Failures lp5']
+def full_data(data_name):
     path = 'E:\\Jade\\time_series\\data\\multi_var'
     for file in data_name:
         newpath = os.path.join(path, file)
@@ -82,12 +81,14 @@ def full_data():
 
 if __name__ == '__main__':
     # 1、read cricket_data
-    file = h5py.File('cricket_data.h5','r')
-    train_x = file['train_x'][:]
-    train_y = file['train_y'][:]
-    print(len(np.unique(train_y)))
+    # file = h5py.File('cricket_data.h5','r')
+    # train_x = file['train_x'][:]
+    # train_y = file['train_y'][:]
+    # print(len(np.unique(train_y)))
     # 2、Multi 数据
-    # full_data()
+    # data_name = ['Robot Execution Failures lp1', 'Robot Execution Failures lp2', 'Robot Execution Failures lp3','Robot Execution Failures lp4', 'Robot Execution Failures lp5']
+    data_name = ['wafer']
+    full_data(data_name) # 可能每个样本shape不完全一样，不能reshape
     # read
 
 

@@ -68,7 +68,7 @@ def distance_to_HDP(D,density):
     return distance
 
 # 3、
-def densityPeakRNN(k,X,D):
+def densityPeakRNN(k,K,X,D):
     # X:样本数量,样本长度,变量数目
     # return centerlabel
     n = X.shape[0]
@@ -84,7 +84,7 @@ def densityPeakRNN(k,X,D):
     count = 0
     i = 0
     center_points = []
-    while count < k:
+    while count < K:
         if density[sort_points[i][0]] > mean_density:
             center_points.append(sort_points[i][0])
             count += 1

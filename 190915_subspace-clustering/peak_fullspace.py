@@ -22,8 +22,8 @@ for file in data_name:
     X = f['train_x'][:]
     y = f['train_y'][:] # 1,2,3... np.array
 
-    print("%s数据集进行子空间聚类..." % file)
-    
+    print("%s数据集进行全空间聚类..." % file)
+
     # 获取正常（没有变量权值）的距离矩阵
     PATH = './data/' + file + '_distance.npy'
     if os.path.exists(PATH):
@@ -32,56 +32,47 @@ for file in data_name:
         D = distance_matrix(X)
         np.save(PATH, D)
 
-    # 2、初始化峰值和随机子空间
+    # 2、初始化峰值
     K = len(np.unique(y))
     N = X.shape[0]
     L = X.shape[1]
     R = X.shape[2]
 
-    # 2.1 初始化峰值
     # k:求某点是的密度，KNN的k值
     k = 10
-    center_label,density = densityPeakRNN(k,K,X,D)
-    # 2.2 随机子空间
-    np.random.seed(0)
-    W = np.random.random((K,R))
-    s = W.sum(axis=1)
-    # 标准化，每一行相加等于1
-    for i in range(K):
-        W[i] = W[i] / s[i]
-    
-        
-    # 迭代循环
+    center_label, density = densityPeakRNN(k, K, X, D)
+
+    # 全空间
+    W = np.ones((K,R))
+
     iter = 15
     RI = []
     x_axis = []
-    for i in range(1,iter+1):
+    for i in range(1, iter + 1):
         # 3、样本分配到簇
-        # 该步骤要用到变量子空间
         part = np.zeros(N)
         in_cluster = [[] for _ in range(K)]
+        print(in_cluster)
         for n in range(N):
-            ck = series_to_centers(X,n,center_label,W)
+            ck = series_to_centers(X, n, center_label, W)
             part[n] = ck
             in_cluster[ck].append(n)
-
-        # 4、更新子空间和峰值
-        # 4.1 更新子空间
-        W = getHA(part,in_cluster,N,K,R,center_label,X)
-        # 4.2 更新峰值
-        center_label = update_peak(center_label,in_cluster,density,D)
-
+        print(in_cluster)
+        # 4、更新峰值
+        center_label = update_peak(center_label, in_cluster, density, D)
+        print(center_label)
         # evaluation
         RI.append(RandIndex(part, y))
         x_axis.append(i)
+        print("iter%d" % i)
 
     # save results
-    PATH = './data/' + file + '_part.npy'
+    PATH = './data/' + file + '_full-part.npy'
     np.save(PATH, part)
 
     # plot RI
     plt.figure()
-    plt.xlim(1,iter)
+    plt.xlim(1, iter)
     x_major_locator = MultipleLocator(1)
     ax = plt.gca()
     # ax为两条坐标轴的实例
@@ -89,7 +80,7 @@ for file in data_name:
     # 把x轴的主刻度设置为1的倍数
     plt.xlabel('iter')
     plt.ylabel('RI')
-    plt.plot(x_axis,RI)
-    picture_name = './data/' + file + '_RI-figure.png'
+    plt.plot(x_axis, RI)
+    picture_name = './data/' + file + '_full-RI-figure.png'
     plt.savefig(picture_name)
     plt.show()

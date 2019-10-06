@@ -17,7 +17,6 @@ def KNN_SMin(DMax, SMin, k, distance):
 
 def update_peak(center_label,in_cluster,density,distance):
     K = len(in_cluster)
-    print(K)
     for k in range(K):
         # 对簇Ck中每条序列样本计算其局部密度𝜌𝑖 ，以及到簇内其它序列的距离之和SD𝑖
         Ck_density = {}
@@ -29,11 +28,10 @@ def update_peak(center_label,in_cluster,density,distance):
                 if j != i:
                     Ck_sd[i] = Ck_sd[i] + distance[i][j]
         sorted_density = sorted(Ck_density.items(), key=lambda x: x[1], reverse=True)
-        print(Ck_density)
         DMax = sorted_density[0][0]
         sorted_sd = sorted(Ck_sd.items(), key=lambda x: x[1])
         SMin = sorted_sd[0][0]
-        m = 5
+        m = 20
         center_label[k] = KNN_SMin(DMax, SMin, m, distance)
     return center_label
 
