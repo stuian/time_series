@@ -52,19 +52,15 @@ for file in data_name:
         # 3、样本分配到簇
         part = np.zeros(N)
         in_cluster = [[] for _ in range(K)]
-        print(in_cluster)
         for n in range(N):
             ck = series_to_centers(X, n, center_label, W)
             part[n] = ck
             in_cluster[ck].append(n)
-        print(in_cluster)
         # 4、更新峰值
         center_label = update_peak(center_label, in_cluster, density, D)
-        print(center_label)
         # evaluation
         RI.append(RandIndex(part, y))
         x_axis.append(i)
-        print("iter%d" % i)
 
     # save results
     PATH = './data/' + file + '_full-part.npy'

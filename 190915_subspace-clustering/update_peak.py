@@ -11,7 +11,7 @@ def KNN_SMin(DMax, SMin, k, distance):
         D_to_SMin = {}
         dist = float("inf")
         for i in range(k):
-            if dist < distance[sort_points[i][0]][SMin]:
+            if distance[sort_points[i][0]][SMin] < dist:
                 peak = sort_points[i][0]
         return peak
 
@@ -31,7 +31,7 @@ def update_peak(center_label,in_cluster,density,distance):
         DMax = sorted_density[0][0]
         sorted_sd = sorted(Ck_sd.items(), key=lambda x: x[1])
         SMin = sorted_sd[0][0]
-        m = 20
+        m = 5
         center_label[k] = KNN_SMin(DMax, SMin, m, distance)
     return center_label
 

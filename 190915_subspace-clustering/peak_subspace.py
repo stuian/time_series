@@ -14,7 +14,7 @@ from matplotlib.pyplot import MultipleLocator
 # 1、get Robot Execution Failures lp1-5 data
 path = 'E:\\Jade\\time_series\\190808_MTS-clustering'
 # data_name = ['Robot Execution Failures lp1', 'Robot Execution Failures lp2', 'Robot Execution Failures lp3','Robot Execution Failures lp4','Robot Execution Failures lp5']
-data_name = ['Robot Execution Failures lp5']
+data_name = ['Robot Execution Failures lp5'] # ,'cricket_data'
 for file in data_name:
     filename = file + '.h5'
     filename = os.path.join(path,filename)
@@ -43,12 +43,14 @@ for file in data_name:
     k = 10
     center_label,density = densityPeakRNN(k,K,X,D)
     # 2.2 随机子空间
-    np.random.seed(0)
-    W = np.random.random((K,R))
-    s = W.sum(axis=1)
-    # 标准化，每一行相加等于1
-    for i in range(K):
-        W[i] = W[i] / s[i]
+    # np.random.seed(0)
+    # W = np.random.random((K,R))
+    # s = W.sum(axis=1)
+    # # 标准化，每一行相加等于1
+    # for i in range(K):
+    #     W[i] = W[i] / s[i]
+    W = np.ones((K,R))
+    W = W / R
     
         
     # 迭代循环
@@ -68,6 +70,7 @@ for file in data_name:
         # 4、更新子空间和峰值
         # 4.1 更新子空间
         W = getHA(part,in_cluster,N,K,R,center_label,X)
+        print(W)
         # 4.2 更新峰值
         center_label = update_peak(center_label,in_cluster,density,D)
 
@@ -90,6 +93,6 @@ for file in data_name:
     plt.xlabel('iter')
     plt.ylabel('RI')
     plt.plot(x_axis,RI)
-    picture_name = './data/' + file + '_RI-figure.png'
+    picture_name = './data/' + file + '_RI-figure1.png'
     plt.savefig(picture_name)
     plt.show()
