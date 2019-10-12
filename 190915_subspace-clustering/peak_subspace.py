@@ -4,28 +4,29 @@ import os
 from distance_matrix import distance_matrix
 from density_peak import densityPeakRNN
 from cluster import series_to_centers
-from update_subspace import getHA
-from update_peak import update_peak
+from update_subspace import update_subspace
+from update_RNNpeak import update_peak
 from evaluation import RandIndex
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import MultipleLocator
 #从pyplot导入MultipleLocator类，这个类用于设置刻度间隔
 
 # 1、get Robot Execution Failures lp1-5 data
-path = 'E:\\Jade\\time_series\\190808_MTS-clustering'
+path = './data/'
 # data_name = ['Robot Execution Failures lp1', 'Robot Execution Failures lp2', 'Robot Execution Failures lp3','Robot Execution Failures lp4','Robot Execution Failures lp5']
-data_name = ['Robot Execution Failures lp5'] # ,'cricket_data'
+data_name = ['Robot Execution Failures lp5'] #'cricket_data'
 for file in data_name:
     filename = file + '.h5'
     filename = os.path.join(path,filename)
     f = h5py.File(filename,'r')
     X = f['train_x'][:]
     y = f['train_y'][:] # 1,2,3... np.array
+    # print(X.shape) # (164, 15, 6)
 
     print("%s数据集进行子空间聚类..." % file)
     
     # 获取正常（没有变量权值）的距离矩阵
-    PATH = './data/' + file + '_distance.npy'
+    PATH = './result/' + file + '_distance.npy'
     if os.path.exists(PATH):
         D = np.load(PATH)
     else:
@@ -39,9 +40,10 @@ for file in data_name:
     R = X.shape[2]
 
     # 2.1 初始化峰值
-    # k:求某点是的密度，KNN的k值
+    # k:求某点的密度中KNN的k值
     k = 10
     center_label,density = densityPeakRNN(k,K,X,D)
+
     # 2.2 随机子空间
     # np.random.seed(0)
     # W = np.random.random((K,R))
@@ -56,7 +58,6 @@ for file in data_name:
     # 迭代循环
     iter = 15
     RI = []
-    x_axis = []
     for i in range(1,iter+1):
         # 3、样本分配到簇
         # 该步骤要用到变量子空间
@@ -67,19 +68,27 @@ for file in data_name:
             part[n] = ck
             in_cluster[ck].append(n)
 
+        out_cluster = []
+        for i in range(K):
+            temp = []
+            for j in range(K):
+                if j != i:
+                    temp = temp + in_cluster[j]
+            out_cluster.append(temp)
+
         # 4、更新子空间和峰值
         # 4.1 更新子空间
-        W = getHA(part,in_cluster,N,K,R,center_label,X)
-        print(W)
+        W = update_subspace(in_cluster,out_cluster,center_label,X)
+
         # 4.2 更新峰值
-        center_label = update_peak(center_label,in_cluster,density,D)
+        center_label = update_peak(in_cluster,center_label,X,W,D,density)
+        # center_label = update_peak(center_label,in_cluster,density,distance)
 
         # evaluation
         RI.append(RandIndex(part, y))
-        x_axis.append(i)
 
     # save results
-    PATH = './data/' + file + '_part.npy'
+    PATH = './result/' + file + '_part.npy'
     np.save(PATH, part)
 
     # plot RI
@@ -92,7 +101,7 @@ for file in data_name:
     # 把x轴的主刻度设置为1的倍数
     plt.xlabel('iter')
     plt.ylabel('RI')
-    plt.plot(x_axis,RI)
-    picture_name = './data/' + file + '_RI-figure1.png'
+    plt.plot(RI)
+    picture_name = './pictures/' + file + '_RI-figure3.png'
     plt.savefig(picture_name)
     plt.show()

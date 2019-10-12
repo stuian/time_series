@@ -15,47 +15,43 @@ def single_distance_between(a, b, r):
 
 def getHA(part,in_cluster,N,K,R,center_label,X):
     # 求out_cluster
-    out_cluster = [[] for _ in range(K)]
-    
-    for n in range(N):
-        out_cluster[int(part[n])].append(n)
+    out_cluster = []
+    for i in range(K):
+        temp = []
+        for j in range(K):
+            if j != i:
+                temp = temp + in_cluster[j]
+        out_cluster.append(temp)
 
     # 更新变量子空间，即HA
     HA = np.zeros((K, R))
-    # HA_up = np.zeros((K,R))
-    # HA_down = np.zeros((K,R))
-    mean_distence_between = np.zeros((K, R))
-    std_distence_between = np.zeros((K, R))
 
     for k in range(K):
-        if len(in_cluster[k]) > 1:
-            length_ck = len(in_cluster[k])
-            length_nk = len(out_cluster[k])
+        length_ck = len(in_cluster[k])
+        length_nk = len(out_cluster[k])
 
-            for r in range(R):
-                # 类间距离：平均距离法
-                HD = 0
-                for i in range(length_ck):
-                    for j in range(length_nk):
-                        temp = single_distance_between(X[in_cluster[k][i]], X[out_cluster[k][j]], r)
-                        HD += temp**2
-                HD = HD / (length_ck*length_nk)
+        for r in range(R):
+            # 类间距离：平均距离法
+            HD = 0
+            for i in range(length_ck):
+                for j in range(length_nk):
+                    temp = single_distance_between(X[in_cluster[k][i]], X[out_cluster[k][j]], r)
+                    HD += temp**2
+            HD = HD / (length_ck*length_nk)
 
-                pkr = 0
-                for i in in_cluster[k]:
-                    pkr = pkr + single_distance_between(X[i],X[center_label[k]],r)
-                pkr = np.sqrt(pkr) / length_ck # runningtime说明length_ck里出现了0
+            pkr = 0
+            for i in in_cluster[k]:
+                pkr = pkr + single_distance_between(X[i],X[center_label[k]],r)
+            pkr = np.sqrt(pkr) / length_ck # runningtime说明length_ck里出现了0
 
-                # HA_up[k,r] = HD * (length_ck/N)
-                # HA_down[k,r] = pkr * (length_ck/N)
+            # HA_up[k,r] = HD * (length_ck/N)
+            # HA_down[k,r] = pkr * (length_ck/N)
 
-                if pkr != 0:
-                    HA[k,r] = HD / pkr
-                else:
-                    HA[k,r] = 0
-            HA[np.isnan(HA)] = 0
-        else:
-            HA[k,:] = 0
+            if pkr != 0:
+                HA[k,r] = HD / pkr
+            else:
+                HA[k,r] = 0
+        HA[np.isnan(HA)] = 0
 
     normalization = np.sum(HA,axis=1)
     for k in range(K):

@@ -13,24 +13,17 @@ def single_distance_between(a, b, r):
     return 1 - product  # 越小越好
 
 
-def getHA(part,in_cluster,N,K,R,center_label,X):
-    # 求out_cluster
-    out_cluster = [[] for _ in range(K)]
-    
-    for n in range(N):
-        out_cluster[int(part[n])].append(n)
+def update_subspace(in_cluster,out_cluster,center_label,X):
+    K = len(in_cluster)
+    R = X.shape[2]
 
     # 更新变量子空间，即HA
-    HA = np.zeros((K, R))
-    # HA_up = np.zeros((K,R))
-    # HA_down = np.zeros((K,R))
-    mean_distence_between = np.zeros((K, R))
-    std_distence_between = np.zeros((K, R))
+    W = np.zeros((K, R))
 
     for k in range(K):
-        if len(in_cluster[k]) > 1:
-            length_ck = len(in_cluster[k])
-            length_nk = len(out_cluster[k])
+        length_ck = len(in_cluster[k])
+        length_nk = len(out_cluster[k])
+        if length_ck > 1:
             for r in range(R):
                 interdistance = np.zeros(length_ck * (length_ck - 1) // 2)
                 outsidedistance = np.zeros(length_nk * (length_nk - 1) // 2)
@@ -47,29 +40,26 @@ def getHA(part,in_cluster,N,K,R,center_label,X):
                         outsidedistance[counter_i] = single_distance_between(X[out_cluster[k][i]], X[out_cluster[k][j]],r)
                         counter_i += 1
 
-                mean_distence_between[k, r] = np.mean(interdistance)
-                std_distence_between[k, r] = np.std(interdistance)
+                mean_distence_between = np.mean(interdistance)
+                std_distence_between = np.std(interdistance)
                 ukr2 = np.mean(outsidedistance)
                 skr2 = np.std(outsidedistance)
-                HD = np.sqrt(1 - np.sqrt((2 * std_distence_between[k, r] * skr2) / (std_distence_between[k, r] ** 2 + skr2 ** 2)) \
-                    * np.exp(-(mean_distence_between[k, r] - ukr2) ** 2 / (4 * (std_distence_between[k, r] ** 2 + skr2 ** 2))))
+                HD = np.sqrt(1 - np.sqrt((2 * std_distence_between * skr2) / (std_distence_between ** 2 + skr2 ** 2)) \
+                    * np.exp(-(mean_distence_between - ukr2) ** 2 / (4 * (std_distence_between ** 2 + skr2 ** 2))))
 
                 pkr = 0
                 for i in in_cluster[k]:
-                    pkr = pkr + single_distance_between(X[i],X[center_label[k]],r)
+                    pkr = pkr + single_distance_between(X[i],X[center_label[k]],r)**2
                 pkr = np.sqrt(pkr) / length_ck # runningtime说明length_ck里出现了0
 
-                if pkr != 0:
-                    HA[k,r] = HD / pkr
-                else:
-                    HA[k,r] = 0
-            HA[np.isnan(HA)] = 0
-        else:
-            HA[k,:] = 1/R
+                W[k,r] = HD / pkr
 
-    normalization = np.sum(HA,axis=1)
-    for k in range(K):
-        for r in range(R):
-            HA[k,r] = HA[k,r] / normalization[k]
-    HA[np.isnan(HA)] = 1/R
-    return HA
+            W[np.isnan(W)] = 1 / R
+            sumkr = np.sum(W[k,:])
+            if sumkr !=0 :
+                W[k, :] = W[k,:] / sumkr
+            else:
+                W[k, :] = 1 / R
+        else:
+            W[k, :] = 1 / R
+    return W

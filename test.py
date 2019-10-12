@@ -1,7 +1,4 @@
-import matplotlib.pyplot as plt
+import numpy as np
 
-x = [1,2,3,4,5,6]
-
-plt.figure()
-plt.plot(x)
-plt.show()
+x = np.array([[1,2,3],[2,3,4],[5,6,7]])
+print(x[1])

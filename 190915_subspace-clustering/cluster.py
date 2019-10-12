@@ -10,22 +10,15 @@ def inner_product(a,b):
 def multi_similarity(x,y,weight):
     value = 0
     for i in range(x.shape[1]):
-        value = value + weight[i] * inner_product(x[:,i],y[:,i])
-    return value
-
-# def series_to_centers(X,center_label,K,N,R):
-#     s_to_c = np.zeros((K,N,R))
+        value = value + weight[i] * (inner_product(x[:,i],y[:,i]))**2
+    return np.sqrt(value)
 
 def series_to_centers(X,x,center_label,weight):
-    # x:series index
-    # center_label:center indexes
-    # return center index with min distance between series and centers
     minDist = float('inf')
     index = -1
     for i in range(len(center_label)):
-        if center_label[i] == x:
+        if x == center_label[i]:
             return i
-        # x 不能与峰值一样
         else:
             temp = multi_similarity(X[center_label[i]],X[x],weight[i])
             if temp < minDist:
