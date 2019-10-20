@@ -37,9 +37,12 @@ def update_peak(in_cluster,center_label,X,W,D,density):
                 m = 5
                 curr_colum = distance_w[maxDensityLabel,:]
                 sorted_distance = sorted(enumerate(curr_colum), key=lambda x: x[1])
+                if len(sorted_distance) > m:
+                    sorted_distance = sorted_distance[:m]
                 min_dist = float('inf')
                 index = -1
                 for i in range(len(sorted_distance)):
+                    # 子空间权重距离加簇内筛选
                     if distance_w[minSumLabel,sorted_distance[i][0]] < min_dist:
                         index = sorted_distance[i][0]
                         min_dist = distance_w[minSumLabel,sorted_distance[i][0]]
@@ -47,8 +50,3 @@ def update_peak(in_cluster,center_label,X,W,D,density):
         elif length_ck == 1:
             center_label[k] = in_cluster[k][0]
     return center_label
-
-
-
-
-

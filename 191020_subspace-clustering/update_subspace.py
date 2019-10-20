@@ -1,7 +1,3 @@
-# C:C1,C2,...;[[],[],[],...]
-# X:n x l x r
-# center_label:peak
-
 import numpy as np
 
 def single_distance_between(a, b, r):
@@ -9,8 +5,11 @@ def single_distance_between(a, b, r):
     a = a[:, r]
     b = b[:, r]
     product = np.dot(a, b)
-    product = product / (np.sqrt(np.dot(a, a)) * np.sqrt(np.dot(b, b)))
-    return 1 - product  # 越小越好
+    if np.dot(a,a) == 0 or np.dot(b,b) == 0:
+        product = 0
+    else:
+        product = product / (np.sqrt(np.dot(a,a)) * np.sqrt(np.dot(b,b)))
+    return 1-product # 越小越好
 
 
 def update_subspace(in_cluster,out_cluster,center_label,X):
@@ -18,6 +17,7 @@ def update_subspace(in_cluster,out_cluster,center_label,X):
     R = X.shape[2]
 
     # 更新变量子空间，即HA
+    # 方法一：ppt原方法，比较簇内样本距离分布和簇外样本距离分布
     W = np.zeros((K, R))
 
     for k in range(K):

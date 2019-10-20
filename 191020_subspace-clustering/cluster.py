@@ -4,7 +4,10 @@ import h5py
 # 各序列到各中心的距离
 def inner_product(a,b):
     product = np.dot(a,b)
-    product = product / (np.sqrt(np.dot(a,a)) * np.sqrt(np.dot(b,b)))
+    if np.dot(a,a) == 0 or np.dot(b,b) == 0:
+        product = 0
+    else:
+        product = product / (np.sqrt(np.dot(a,a)) * np.sqrt(np.dot(b,b)))
     return 1-product # 越小越好
 
 def multi_similarity(x,y,weight):
