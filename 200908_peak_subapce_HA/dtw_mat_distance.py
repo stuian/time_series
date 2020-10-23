@@ -2,6 +2,8 @@ import scipy.io as scio
 import numpy as np
 import os
 import time
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
 
 def SBD(x,y):
     # 越小越相似
@@ -21,7 +23,7 @@ def main():
     path = './data'
     file = 'ArabicDigits'
     PATH = './result/'
-    distancename = file + '_dist.npy'
+    distancename = file + '_dtw_dist.npy'
     distance_path = os.path.join(PATH, distancename)
     labelsname = file + "_labels.npy"
     labels_path = os.path.join(PATH,labelsname)
@@ -35,7 +37,7 @@ def main():
     print(N)
     for i in range(N):
         labels.append(data['mts'][0, 0]['testlabels'][i][0])
-    np.save(labels_path,labels)
+    # np.save(labels_path,labels)
     # print(data['mts'][0, 0]['testlabels'][0][0])
     for element in data['mts'][0, 0]['test']:
         R = element[1].shape[0]
@@ -44,7 +46,9 @@ def main():
         for i in range(N):
             for j in range(i):
                 for r in range(R):
-                    single_distance_between[i, j, r] = SBD(element[i][r,:], element[j][r,:])
+                    distance, path = fastdtw(element[i][r,:], element[j][r,:], dist=euclidean)
+                    single_distance_between[i, j, r] = distance
+                    # single_distance_between[i, j, r] = SBD(element[i][r,:], element[j][r,:])
                     single_distance_between[j, i, r] = single_distance_between[i, j, r]
         print(single_distance_between.shape)
         print('完成计算！')

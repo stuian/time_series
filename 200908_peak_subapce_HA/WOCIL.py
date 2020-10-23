@@ -6,7 +6,6 @@ from save_to_excel import write_excel_xlsx
 from evaluation import RandIndex
 from evaluation import Purity
 from evaluation import NMI
-from peak_fullspace import subspace_evaluation
 import time
 
 def euclidian(a,b):
@@ -232,7 +231,7 @@ def update_peak(in_cluster,centers,X):
 def weighted_euclidian(a,b,w):
     return np.exp(-0.5*np.sum(np.square(a-b))*w)
 
-def  Attribute_WeightedOCIL(y,center_label,single_distance_between):
+def  Attribute_WeightedOCIL(y,X,center_label,single_distance_between):
     K = len(np.unique(y))
     print('聚类簇数：', K)
     N = single_distance_between.shape[0]
@@ -304,7 +303,7 @@ def  Attribute_WeightedOCIL(y,center_label,single_distance_between):
 
 def main():
     path = './data/'
-    data_name = ["cricket", 'ArticularyWord']
+    data_name = ["ArabicDigits","uWaveGestureLibrary"]
     for file in data_name:
         print(file)
         filename = file + '.h5'
@@ -313,27 +312,24 @@ def main():
         X = f['train_x'][:]
         # print(X.shape)
         y = f['train_y'][:]
+        K = len(np.unique(y))
 
         # 获取正常（没有变量权值）的距离矩阵
         PATH = './result/' + file + '_dist.npy'
         single_distance_between = np.load(PATH)
 
-        iters = 10
-        centername = file + '_centerlabels.npy'
-        center_path = os.path.join("./result", centername)
-        center_labels = np.load(center_path)
+        k = 5
+        center_label = densityPeakRNN(k, K, single_distance_between)  # return center_label
+        print("initial center_label: ", center_label)
 
         eval_file = file + "_WOCIL"
-        evals = []
-        for iter in range(iters):
-            center_label = center_labels[iter]
-            all_evals = Attribute_WeightedOCIL(y,center_label,single_distance_between)
-            evals.append(all_evals[-1])
+
+        all_evals = Attribute_WeightedOCIL(y,X,center_label,single_distance_between)
 
         # save evaluation
         book_name_xlsx = './result/' + file + '_WOCIL_evaluation.xlsx'
         sheet_name_xlsx = eval_file
-        write_excel_xlsx(book_name_xlsx, sheet_name_xlsx, evals)
+        write_excel_xlsx(book_name_xlsx, sheet_name_xlsx, all_evals)
 
 
 if __name__ == '__main__':
